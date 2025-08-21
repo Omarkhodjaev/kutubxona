@@ -1,39 +1,72 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from 'generated/prisma';
 import { DatabaseService } from 'src/database/database.service';
+import { CreateBookDto } from './dto/create-book.dto';
+import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BooksService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  create(createBookDto: Prisma.BookCreateInput) {
-    console.log(createBookDto);
-    
-    return this.databaseService.book.create({
+  async create(createBookDto: CreateBookDto) {
+    const createdBook = await this.databaseService.book.create({
       data: createBookDto,
     });
+
+    return {
+      message: 'Book created successfully',
+      statusCode: 201,
+      data: { book: createdBook },
+    };
   }
 
-  findAll() {
-    return this.databaseService.book.findMany();
+  async findAll() {
+    const books = await this.databaseService.book.findMany();
+    return {
+      message: 'Books retrieved successfully',
+      statusCode: 200,
+      data: { books },
+    };
   }
 
-  findOne(id: number) {
-    return this.databaseService.book.findUnique({
+  async findOne(id: number) {
+    const book = await this.databaseService.book.findUnique({
       where: { id },
     });
+
+    if (!book) {
+      throw new NotFoundException('Book not found');
+    }
+
+    return {
+      message: 'Book retrieved successfully',
+      statusCode: 200,
+      data: { book },
+    };
   }
 
-  update(id: number, updateBookDto: Prisma.BookUpdateInput) {
-    return this.databaseService.book.update({
+  async update(id: number, updateBookDto: UpdateBookDto) {
+    const updatedBook = await this.databaseService.book.update({
       where: { id },
       data: updateBookDto,
     });
+
+    return {
+      message: 'Book updated successfully',
+      statusCode: 200,
+      data: { book: updatedBook },
+    };
   }
 
-  remove(id: number) {
-    return this.databaseService.book.delete({
+  async remove(id: number) {
+    const deletedBook = await this.databaseService.book.delete({
       where: { id },
     });
+
+    return {
+      message: 'Book deleted successfully',
+      statusCode: 200,
+      data: { book: deletedBook },
+    };
   }
 }
