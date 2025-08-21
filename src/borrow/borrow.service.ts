@@ -18,6 +18,9 @@ export class BorrowService {
     });
     if (!book) throw new NotFoundException('Book not found');
 
+    if (book.isAvailable === false)
+      throw new NotFoundException('Book is not available for borrowing');
+
     await this.databaseService.book.update({
       where: { id: createBorrowDto.bookId },
       data: { isAvailable: false },
@@ -76,6 +79,18 @@ export class BorrowService {
       message: 'Currently borrowed books retrieved successfully',
       statusCode: 200,
       data: { books },
+    };
+  }
+
+  async userBorrowingHistory(id: number) {
+    const borrow = await this.databaseService.borrow.findMany({
+      where: { userId: id },
+    });
+
+    return {
+      message: `User's borrowing history retrieved successfully`,
+      statusCode: 200,
+      data: { borrow },
     };
   }
 

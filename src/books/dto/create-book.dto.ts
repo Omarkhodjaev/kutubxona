@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateBookDto {
   @IsString()
@@ -14,5 +14,6 @@ export class CreateBookDto {
   genre: string;
 
   @IsBoolean()
+  @IsOptional()
   isAvailable: boolean;
 }

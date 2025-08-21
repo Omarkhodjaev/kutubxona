@@ -32,6 +32,11 @@ export class BorrowController {
     return this.borrowService.borrowedBooks();
   }
 
+  @Get('users/:id/history')
+  userBorrowingHistory(@Param('id', ParseIntPipe) id: number) {
+    return this.borrowService.userBorrowingHistory(id);
+  }
+
   @Get()
   findAll() {
     return this.borrowService.findAll();

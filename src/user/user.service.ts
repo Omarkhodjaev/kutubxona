@@ -40,6 +40,7 @@ export class UserService {
     };
   }
 
+
   async findOne(id: number) {
     const user = await this.databaseService.user.findUnique({
       where: { id },
